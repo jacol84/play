@@ -1,13 +1,15 @@
 package play.utils;
+//TODO
+//import org.apache.log4j.ConsoleAppender;
+//import org.apache.log4j.Priority;
+//import org.apache.log4j.spi.LoggingEvent;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Priority;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 
 /**
  * Colour-coded console appender for Log4J.
  */
-public class ANSIConsoleAppender extends ConsoleAppender {
+public class ANSIConsoleAppender {
 
     static final int NORMAL = 0;
     static final int BRIGHT = 1;
@@ -34,34 +36,35 @@ public class ANSIConsoleAppender extends ConsoleAppender {
      * Wraps the ANSI control characters around the
      * output from the super-class Appender.
      */
-    @Override
-    protected void subAppend(LoggingEvent event) {
-        this.qw.write(getColour(event.getLevel()));
-        super.subAppend(event);
-        this.qw.write(END_COLOUR);
-        if (this.immediateFlush) {
-            this.qw.flush();
-        }
-    }
+//    @Override
+//    protected void subAppend(LoggingEvent event) {
+//        this.qw.write(getColour(event.getLevel()));
+//        super.subAppend(event);
+//        this.qw.write(END_COLOUR);
+//        if (this.immediateFlush) {
+//            this.qw.flush();
+//        }
+//    }
 
     /**
      * Get the appropriate control characters to change
      * the colour for the specified logging level.
      */
-    private String getColour(org.apache.log4j.Level level) {
-        switch (level.toInt()) {
-            case Priority.FATAL_INT:
-                return FATAL_COLOUR;
-            case Priority.ERROR_INT:
-                return ERROR_COLOUR;
-            case Priority.WARN_INT:
-                return WARN_COLOUR;
-            case Priority.INFO_INT:
-                return INFO_COLOUR;
-            case Priority.DEBUG_INT:
-                return DEBUG_COLOUR;
-            default:
-                return TRACE_COLOUR;
-        }
-    }
+//    private String getColour(Level level) {
+//
+//        switch (level.intLevel()) {
+//            case StandardLevel.FATAL.intLevel():
+//                return FATAL_COLOUR;
+//            case StandardLevel.ERROR.intLevel():
+//                return ERROR_COLOUR;
+//            case StandardLevel.WARN.intLevel():
+//                return WARN_COLOUR;
+//            case StandardLevel.INFO.intLevel():
+//                return INFO_COLOUR;
+//            case StandardLevel.DEBUG.intLevel():
+//                return DEBUG_COLOUR;
+//            default:
+//                return TRACE_COLOUR;
+//        }
+//    }
 }
