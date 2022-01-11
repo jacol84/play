@@ -1,12 +1,27 @@
 package play.db.jpa;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
+import javax.persistence.spi.PersistenceUnitInfo;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
+
 import play.Logger;
 import play.Play;
 import play.PlayPlugin;
@@ -19,12 +34,6 @@ import play.db.DB;
 import play.db.Model;
 import play.exceptions.JPAException;
 import play.exceptions.UnexpectedException;
-
-import javax.persistence.*;
-import javax.persistence.spi.PersistenceUnitInfo;
-
-import java.lang.annotation.Annotation;
-import java.util.*;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -111,14 +120,14 @@ public class JPAPlugin extends PlayPlugin {
      */
     @Override
     public void onApplicationStart() {
-        changeLevelLog("org.hibernate.SQL", Level.OFF);
+        Configurator.setLevel("org.hibernate.SQL", Level.OFF);
 
         Set<String> dBNames = Configuration.getDbNames();
         for (String dbName : dBNames) {
             Configuration dbConfig = new Configuration(dbName);
             
             if (dbConfig.getProperty("jpa.debugSQL", "false").equals("true")) {
-                changeLevelLog("org.hibernate.SQL", Level.ALL);
+                Configurator.setLevel("org.hibernate.SQL", Level.ALL);
             }
 
             Thread thread = Thread.currentThread();
@@ -136,13 +145,6 @@ public class JPAPlugin extends PlayPlugin {
             }
         }
         JPQL.instance = new JPQL();
-    }
-
-    private void changeLevelLog(String name, Level level) {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        LoggerConfig loggerConfig = ctx.getConfiguration().getLoggerConfig(name);
-        loggerConfig.setLevel(level);
-        ctx.updateLoggers();
     }
 
     private List<Class> entityClasses(String dbName) {

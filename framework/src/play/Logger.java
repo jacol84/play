@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -17,7 +16,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationBuilder;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import play.exceptions.PlayException;
@@ -59,57 +59,54 @@ public class Logger {
      * Try to init stuff.
      */
     public static void init() {
-        System.out.println("TTTTAK1");
         String log4jPath = Play.configuration.getProperty("application.log.path", "/log4j.xml");
         URL log4jConf = Logger.class.getResource(log4jPath);
         if (log4jConf == null) { // try again with the .properties
-            System.out.println("TTTTAK2");
             log4jPath = Play.configuration.getProperty("application.log.path", "/log4j.properties");
             log4jConf = Logger.class.getResource(log4jPath);
         }
         if (log4jConf == null) {
-            System.out.println("TTTTAK3");
-            Properties shutUp = new Properties();
-            shutUp.setProperty("log4j.rootLogger", "OFF");
             LoggerContext context = (LoggerContext) LogManager.getContext(false);
-            context.setConfiguration(new PropertiesConfigurationBuilder().setRootProperties(shutUp).setLoggerContext(context).build());
+            final Configuration configuration = context.getConfiguration();
+            configuration.getLoggerConfig(LogManager.ROOT_LOGGER_NAME).setLevel(org.apache.logging.log4j.Level.OFF);
             context.reconfigure();
-
         } else if (Logger.log4j == null) {
-            System.out.println("TTTTAK4" + log4jConf);
             try {
                 if (Paths.get(log4jConf.toURI()).startsWith(Play.applicationPath.toPath())) {
+                    Configurator.reconfigure(log4jConf.toURI());
                     configuredManually = true;
-                    final LoggerContext context = (LoggerContext) LogManager.getContext(false);
-                    context.setConfigLocation(log4jConf.toURI());
-                    context.start();
-                    System.out.println("TTTTAK5");
                 }
             } catch (IllegalArgumentException | FileSystemNotFoundException | SecurityException | URISyntaxException e) {
             }
-            System.out.println("TTTTAK6");
-            Logger.log4j = LogManager.getLogger("");
+            Logger.log4j = LogManager.getLogger("play");
             // In test mode, append logs to test-result/application.log
             if (Play.runningInTestMode()) {
                 try {
                     if (!Play.getFile("test-result").exists()) {
                         Play.getFile("test-result").mkdir();
                     }
-                    final FileAppender testLog = FileAppender.newBuilder().withAppend(false)
-                                                           .withFileName(Play.getFile("test-result/application.log").getAbsolutePath())
-                                                           .setLayout(PatternLayout.newBuilder().withPattern("%d{DATE} %-5p ~ %m%n").build()).build();
-                    testLog.start();
-                    final LoggerContext context = (LoggerContext) LogManager.getContext(false);
-                    context.getConfiguration().addAppender(testLog);
-                    context.reconfigure();
-
+                    addAppenderTest();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            System.out.println("TTTTAK7" + log4j.getLevel());
-            System.out.println("TTTTAK7" + log4j.getName());
         }
+    }
+
+    private static void addAppenderTest() {
+        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final Configuration configuration = context.getConfiguration();
+        final FileAppender appender = FileAppender.newBuilder().withAppend(true).setName("test-result")
+                                                  .withFileName(Play.getFile("test-result/application.log").getAbsolutePath())
+                                                  .setLayout(PatternLayout.newBuilder().withPattern("%d{DATE} %-5p ~ %m%n").build())
+                                                  .setConfiguration(configuration)
+                                                  .build();
+        appender.start();
+        configuration.addAppender(appender);
+        for (final LoggerConfig loggerConfig : configuration.getLoggers().values()) {
+            loggerConfig.addAppender(appender, loggerConfig.getLevel(), loggerConfig.getFilter());
+        }
+        configuration.getRootLogger().addAppender(appender, null, null);
     }
 
     /**
@@ -120,12 +117,7 @@ public class Logger {
         if (forceJuli || log4j == null) {
             Logger.juli.setLevel(toJuliLevel(level));
         } else {
-
-            final LoggerContext context = (LoggerContext) LogManager.getContext(false);
-            final Configuration configuration = context.getConfiguration();
-            configuration.getLoggerConfig(LogManager.ROOT_LOGGER_NAME).setLevel(org.apache.logging.log4j.Level.toLevel(level));
-            context.updateLoggers();
-
+            Configurator.setLevel(LogManager.ROOT_LOGGER_NAME, org.apache.logging.log4j.Level.toLevel(level));
             if (redirectJuli) {
                 java.util.logging.Logger rootLogger = java.util.logging.Logger.getLogger("");
                 for (Handler handler : rootLogger.getHandlers()) {
