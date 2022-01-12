@@ -29,7 +29,7 @@ You can set the Play logger’s log level by configuring "application.log":confi
 If you need to fully configure Log4j, create a @log4j.properties@ file in the @conf/@ directory. Since this directory is the first element of the classpath, this file will be the default used by all libraries.
 
 The default Log4j configuration is the following:
-bc. # appender Console
+bc. #appender Console
 appender.console.type = Console
 appender.console.name = STDOUT
 appender.console.layout.type = PatternLayout
