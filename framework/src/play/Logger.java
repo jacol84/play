@@ -58,13 +58,12 @@ public class Logger {
     /**
      * Try to init stuff.
      */
-    public static void init() {
-        String log4jPath = Play.configuration.getProperty("application.log.path", "/log4j.xml");
-        URL log4jConf = Logger.class.getResource(log4jPath);
-        if (log4jConf == null) { // try again with the .properties
-            log4jPath = Play.configuration.getProperty("application.log.path", "/log4j.properties");
-            log4jConf = Logger.class.getResource(log4jPath);
-        }
+    public static void init(){
+        init(new LoggerInit());
+    }
+
+    static void init(LoggerInit init) {
+        final URL log4jConf = init.getLog4jConf();
         if (log4jConf == null) {
             LoggerContext context = (LoggerContext) LogManager.getContext(false);
             final Configuration configuration = context.getConfiguration();
@@ -72,13 +71,13 @@ public class Logger {
             context.reconfigure();
         } else if (Logger.log4j == null) {
             try {
-                if (Paths.get(log4jConf.toURI()).startsWith(Play.applicationPath.toPath())) {
+                if (init.access()) {
                     Configurator.reconfigure(log4jConf.toURI());
                     configuredManually = true;
+                    Logger.log4j = LogManager.getLogger("play");
                 }
-            } catch (IllegalArgumentException | FileSystemNotFoundException | SecurityException | URISyntaxException e) {
+            } catch (IllegalArgumentException | FileSystemNotFoundException | SecurityException | URISyntaxException ignored) {
             }
-            Logger.log4j = LogManager.getLogger("play");
             // In test mode, append logs to test-result/application.log
             if (Play.runningInTestMode()) {
                 try {
@@ -117,7 +116,7 @@ public class Logger {
         if (forceJuli || log4j == null) {
             Logger.juli.setLevel(toJuliLevel(level));
         } else {
-            Configurator.setLevel(LogManager.ROOT_LOGGER_NAME, org.apache.logging.log4j.Level.toLevel(level));
+            Configurator.setRootLevel(org.apache.logging.log4j.Level.toLevel(level));
             if (redirectJuli) {
                 java.util.logging.Logger rootLogger = java.util.logging.Logger.getLogger("");
                 for (Handler handler : rootLogger.getHandlers()) {
@@ -682,6 +681,29 @@ public class Logger {
         return new CallInfo(caller.getClassName(), caller.getMethodName());
     }
 
+    /**
+     * class for init date
+     */
+    static class LoggerInit{
+        URL log4jConf ;
+
+        LoggerInit() {
+            String log4jPath = Play.configuration.getProperty("application.log.path", "/log4j.xml");
+            log4jConf = Logger.class.getResource(log4jPath);
+            if (log4jConf == null) { // try again with the .properties
+                log4jPath = Play.configuration.getProperty("application.log.path", "/log4j.properties");
+                log4jConf = Logger.class.getResource(log4jPath);
+            }
+        }
+
+        public URL getLog4jConf() {
+            return log4jConf;
+        }
+
+        public boolean access() throws URISyntaxException {
+            return Paths.get(log4jConf.toURI()).startsWith(Play.applicationPath.toPath());
+        }
+    }
     /**
      * juli handler that Redirect to log4j
      */
