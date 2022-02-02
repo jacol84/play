@@ -446,7 +446,7 @@ class IamADeveloper(unittest.TestCase):
             self.assert_(html.count('insert ";" to complete BlockStatements'))
             self.assert_(html.count('In /app/controllers/Application.java (around line 13)'))
             self.assert_(html.count('       render()'))            
-            self.assert_(waitFor(self.play, 'ERROR ~'))
+            self.assert_(waitFor(self.play, 'ERROR play -'))
             self.assert_(waitFor(self.play, 'Compilation error (In /app/controllers/Application.java around line 13)'))
             self.assert_(waitFor(self.play, 'Syntax error, insert ";" to complete BlockStatements'))
             self.assert_(waitFor(self.play, 'at Invocation.HTTP Request(Play!)'))
