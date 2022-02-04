@@ -28,7 +28,7 @@ public class FastTagsTest {
         // take into account that your tests will fail on other platforms
         // force line.separator be the same on any platform
         // or use String.format in expected code with the placeholder '%n' for any expected line separation.
-        System.setProperty("line.separator","\n");
+
         Http.Response.current.set(new Http.Response());
         Http.Response.current().encoding = "UTF-8";
 
@@ -54,8 +54,8 @@ public class FastTagsTest {
         FastTags._form(args, mock(Closure.class), new PrintWriter(out), null, 0);
 
         assertEquals(
-                "<form action=\"/foo/bar\" method=\"get\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >\n" +
-                "\n" +
+                "<form action=\"/foo/bar\" method=\"get\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >"+System.lineSeparator()+
+                System.lineSeparator()+
                 "</form>", out.toString());
     }
 
@@ -73,8 +73,8 @@ public class FastTagsTest {
         FastTags._form(args, mock(Closure.class), new PrintWriter(out), null, 0);
 
         assertEquals(
-                "<form action=\"/foo/bar\" method=\"get\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" name=\"my-form\">\n" +
-                "\n" +
+                "<form action=\"/foo/bar\" method=\"get\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" name=\"my-form\">"+System.lineSeparator()+
+                System.lineSeparator()+
                 "</form>", out.toString());
     }
 
@@ -91,9 +91,9 @@ public class FastTagsTest {
         FastTags._form(args, mock(Closure.class), new PrintWriter(out), null, 0);
 
         assertEquals(
-                "<form action=\"/foo/bar\" method=\"post\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >\n" +
-                "<input type=\"hidden\" name=\"authenticityToken\" value=\"1234\"/>\n" +
-                "\n" +
+                "<form action=\"/foo/bar\" method=\"post\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >"+System.lineSeparator()+
+                "<input type=\"hidden\" name=\"authenticityToken\" value=\"1234\"/>"+System.lineSeparator()+
+                System.lineSeparator()+
                 "</form>", out.toString());
     }
 
@@ -110,9 +110,9 @@ public class FastTagsTest {
         FastTags._form(args, mock(Closure.class), new PrintWriter(out), null, 0);
 
         assertEquals(
-                "<form action=\"/foo/bar\" method=\"post\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >\n" +
-                "<input type=\"hidden\" name=\"authenticityToken\" value=\"1234\"/>\n" +
-                "\n" +
+                "<form action=\"/foo/bar\" method=\"post\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >"+System.lineSeparator()+
+                "<input type=\"hidden\" name=\"authenticityToken\" value=\"1234\"/>"+System.lineSeparator()+
+                System.lineSeparator()+
                 "</form>", out.toString());
     }
 
@@ -130,9 +130,9 @@ public class FastTagsTest {
         FastTags._form(args, mock(Closure.class), new PrintWriter(out), null, 0);
 
         assertEquals(
-                "<form action=\"/foo/bar\" method=\"post\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >\n" +
-                "<input type=\"hidden\" name=\"authenticityToken\" value=\"1234\"/>\n" +
-                "\n" +
+                "<form action=\"/foo/bar\" method=\"post\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >"+System.lineSeparator()+
+                "<input type=\"hidden\" name=\"authenticityToken\" value=\"1234\"/>"+System.lineSeparator()+
+                System.lineSeparator()+
                 "</form>", out.toString());
     }
 
@@ -150,8 +150,8 @@ public class FastTagsTest {
         FastTags._form(args, mock(Closure.class), new PrintWriter(out), null, 0);
 
         assertEquals(
-                "<form action=\"/foo/bar\" method=\"get\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" data-customer=\"12\" >\n" +
-                "\n" +
+                "<form action=\"/foo/bar\" method=\"get\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" data-customer=\"12\" >"+System.lineSeparator()+
+                System.lineSeparator()+
                 "</form>", out.toString());
     }
 
@@ -168,8 +168,8 @@ public class FastTagsTest {
         FastTags._form(args, mock(Closure.class), new PrintWriter(out), null, 0);
 
         assertEquals(
-                "<form action=\"/foo/bar\" method=\"get\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >\n" +
-                "\n" +
+                "<form action=\"/foo/bar\" method=\"get\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >"+System.lineSeparator()+
+                System.lineSeparator()+
                 "</form>", out.toString());
     }
 
@@ -187,8 +187,8 @@ public class FastTagsTest {
         FastTags._form(args, mock(Closure.class), new PrintWriter(out), null, 0);
 
         assertEquals(
-                "<form action=\"/foo/bar\" method=\"get\" accept-charset=\"UTF-8\" enctype=\"xyz\" >\n" +
-                "\n" +
+                "<form action=\"/foo/bar\" method=\"get\" accept-charset=\"UTF-8\" enctype=\"xyz\" >"+System.lineSeparator()+
+                System.lineSeparator()+
                 "</form>", out.toString());
     }
 
@@ -201,9 +201,9 @@ public class FastTagsTest {
         FastTags._form(args, mock(Closure.class), new PrintWriter(out), null, 0);
 
         assertEquals(
-                "<form action=\"/foo/bar\" method=\"post\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >\n" +
-                        "<input type=\"hidden\" name=\"authenticityToken\" value=\"1234\"/>\n" +
-                        "\n" +
+                "<form action=\"/foo/bar\" method=\"post\" accept-charset=\"UTF-8\" enctype=\"application/x-www-form-urlencoded\" >"+System.lineSeparator()+
+                        "<input type=\"hidden\" name=\"authenticityToken\" value=\"1234\"/>"+System.lineSeparator()+
+                        System.lineSeparator()+
                         "</form>", out.toString());
     }
 }
