@@ -17,10 +17,12 @@ jobs:
 
     strategy:
       matrix:
-        jdk: [ 11, 17 ]
-        os: [ubuntu-latest, windows-latest]
+        jdk: [ 17 ]
+        os: [ ubuntu-latest ]
+        #        jdk: [ 11, 17 ]
+        #        os: [ubuntu-latest, windows-latest]
         exclude:
-          - os : windows-latest
+          - os: windows-latest
             jdk: 17
 
     name: Check / Tests (JDK ${{ matrix.jdk }} - ${{ matrix.os }}
