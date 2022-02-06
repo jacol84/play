@@ -74,11 +74,10 @@ jobs:
 
       - name: Build with Ant
         working-directory: ./framework
-        run: ant package
+        run: ant packageA
 
       - name: ziping
         uses: actions/upload-artifact@v2
         with:
-          name: play
           path: |
             ./framework/dist/*
