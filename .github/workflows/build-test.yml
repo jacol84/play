@@ -80,7 +80,7 @@ jobs:
       - name: ziping
         uses: actions/upload-artifact@v2
         with:
-          name: play-${{ GITHUB_SHA }}
+          name: play-${{ github.sha }}
           if-no-files-found: error
           path: |
             ./framework/dist/*
