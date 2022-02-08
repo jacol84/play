@@ -53,7 +53,7 @@ jobs:
     needs:
       - testing
     runs-on: ubuntu-latest
-    name: "BUILD ${{ GITHUB_SHA }}"
+    name: BUILD
     steps:
       - name: Checkout
         uses: actions/checkout@v2
