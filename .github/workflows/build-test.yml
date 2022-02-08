@@ -18,12 +18,12 @@ jobs:
     strategy:
       matrix:
         jdk: [ 17 ]
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest, windows-latest]
         #        jdk: [ 11, 17 ]
         #        os: [ubuntu-latest, windows-latest]
-        exclude:
-          - os: windows-latest
-            jdk: 17
+#        exclude:
+#          - os: windows-latest
+#            jdk: 17
 
     name: Check / Tests (JDK ${{ matrix.jdk }} - ${{ matrix.os }}
     steps:
@@ -32,10 +32,20 @@ jobs:
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
-          
+
       - name: Dump GitHub context
         id: github_context_step
         run: echo '${{ toJSON(github) }}'
+      - name: Dump job context
+        run: echo '${{ toJSON(job) }}'
+      - name: Dump steps context
+        run: echo '${{ toJSON(steps) }}'
+      - name: Dump runner context
+        run: echo '${{ toJSON(runner) }}'
+      - name: Dump strategy context
+        run: echo '${{ toJSON(strategy) }}'
+      - name: Dump matrix context
+        run: echo '${{ toJSON(matrix) }}'
 
       - name: Set up python 2
         uses: actions/setup-python@v2
