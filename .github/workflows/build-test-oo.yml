@@ -2,12 +2,25 @@ name: Pull Requests
 
 on:
   workflow_dispatch:
+    inputs:
+      os:
+        required: true
+        type: string
+        default: 'ubuntu-latest'
+      jdk:
+        required: true
+        type: string
+        default: '17'
+      ant:
+        required: true
+        type: string
+        default: 'ant artifact'
 
 
 jobs:
   run:
-    uses: ./.github/workflows/build.yml
+    uses: './.github/workflows/build.yml'
       with:
-        os: ubuntu-latest
-        jdk: 11
-        ant: ant test
+        os: 'ubuntu-latest'
+        jdk: '11'
+        ant: 'ant test'
