@@ -6,20 +6,23 @@ on:
       os:
         required: true
         type: string
+        description: ''
         default: 'ubuntu-latest'
       jdk:
         required: true
         type: string
+        description: ''
         default: '17'
       ant:
         required: true
         type: string
+        description: ''
         default: 'ant artifact'
 
 
 jobs:
   run:
-    uses: './.github/workflows/build.yml'
+    uses: ./.github/workflows/build.yml
       with:
         os: 'ubuntu-latest'
         jdk: '11'

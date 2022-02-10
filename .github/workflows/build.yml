@@ -1,4 +1,4 @@
-name: Pull Requests
+name: Pull Requests aa
 
 on:
   workflow_dispatch:
@@ -27,18 +27,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  testing:
+  zas:
     runs-on: ${{ inputs.os }}
 
     strategy:
       matrix:
         jdk: [ 11, 17 ]
-        os: [ubuntu-latest, windows-latest]
         exclude:
           - os: windows-latest
             jdk: 11
 
-    name: Check / Tests -> JDK-${{ matrix.jdk }}/${{ matrix.os }}
+    name: Check / Tests -> JDK-${{ inputs.jdk }}/${{ inputs.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -52,7 +51,7 @@ jobs:
           python-version: '2.x'
           architecture: 'x64'
 
-      - name: Set up JDK ${{ matrix.jdk }}
+      - name: Set up JDK ${{ inputs.jdk }}
         uses: actions/setup-java@v2
         with:
           java-version: ${{ matrix.jdk }}
@@ -62,7 +61,7 @@ jobs:
         working-directory: ./framework
         run: ant test
 
-  build:
+  zddsadsa:
     needs:
       - testing
     runs-on: ubuntu-latest
