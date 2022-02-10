@@ -4,22 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       os:
-        required: true
         type: string
         default: 'ubuntu-latest'
       jdk:
-        required: true
         type: string
         default: '17'
       ant:
-        required: true
         type: string
         default: 'ant artifact'
 
 
 jobs:
   run:
-    runs-on: ${{ inputs.os }}
+    runs-on: ubuntu-latest
       name: BUILD
       steps:
         - name: Checkout
