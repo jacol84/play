@@ -1,0 +1,13 @@
+name: Pull Requests
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  run:
+    uses: ./.github/workflows/build.yml
+      with:
+        os: ubuntu-latest
+        jdk: 11
+        ant: ant test
