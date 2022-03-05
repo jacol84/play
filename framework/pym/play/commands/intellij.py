@@ -26,6 +26,10 @@ def execute(**kargs):
 
     playHome = play_env["basedir"].replace('\\', '/')
 
+    if playHome[0] =="/" and app.path[0] == "/" :
+        map1 = "/".join(map(lambda x: "..", filter(lambda x: x != "", app.path.split("/"))))
+        print("$MODULE_DIR$/" + map1 + playHome)
+
     if os.name == 'nt':
         # On Windows, IntelliJ needs uppercase driveletter
         if playHome[1:2] == ':':
