@@ -318,10 +318,14 @@ public class ApplicationClassloader extends ClassLoader {
         long start = java.lang.System.nanoTime();
         // Now check for file modification
         List<ApplicationClass> modifieds = new ArrayList<>();
-        for (ApplicationClass applicationClass : Play.classes.all()) {
-            if (applicationClass.timestamp < applicationClass.javaFile.lastModified()) {
-                applicationClass.refresh();
-                modifieds.add(applicationClass);
+        Optional<ApplicationClass> app = Play.classes.all().stream().filter(x -> x.timestamp == 0L).findFirst();
+        Optional<DetectChangeInPath> det = Play.detectJava.stream().filter(DetectChangeInPath::detect).findFirst();
+        if (app.isPresent() ||  det.isPresent()) {
+            for (ApplicationClass applicationClass : Play.classes.all()) {
+                if (applicationClass.timestamp < applicationClass.javaFile.lastModified()) {
+                    applicationClass.refresh();
+                    modifieds.add(applicationClass);
+                }
             }
         }
         System.out.println("aaa1->" + (java.lang.System.nanoTime()-start));

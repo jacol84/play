@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,7 @@ import java.util.regex.Pattern;
 import play.cache.Cache;
 import play.classloading.ApplicationClasses;
 import play.classloading.ApplicationClassloader;
+import play.classloading.DetectChangeInPath;
 import play.deps.DependenciesManager;
 import play.exceptions.PlayException;
 import play.exceptions.RestartNeededException;
@@ -120,6 +120,10 @@ public class Play {
      * All paths to search for Java files
      */
     public static List<VirtualFile> javaPath = new CopyOnWriteArrayList<>();
+    /**
+     * All File to detect changes in java
+     */
+    public static List<DetectChangeInPath> detectJava = new CopyOnWriteArrayList<>();
     /**
      * All paths to search for templates files
      */
@@ -280,9 +284,9 @@ public class Play {
         roots.clear();
         roots.add(appRoot);
 
-        javaPath.clear();
-        javaPath.add(appRoot.child("app"));
-        javaPath.add(appRoot.child("conf"));
+        cleanJavaPath();
+        addJavaPath(appRoot.child("app"));
+        addJavaPath(appRoot.child("conf"));
 
         // Build basic templates path
         templatesPath.clear();
@@ -336,6 +340,20 @@ public class Play {
 
         Play.initialized = true;
     }
+
+    private static void cleanJavaPath() {
+        javaPath.clear();
+        detectJava.forEach(DetectChangeInPath::close);
+        detectJava.clear();
+    }
+
+    public static void addJavaPath(VirtualFile app) {
+        javaPath.add(app);
+        if (mode.isDev()) {
+            detectJava.add(new DetectChangeInPath(app.getRealFile().toPath()));
+        }
+    }
+
 
     public static void guessFrameworkPath() {
         // Guess the framework path
@@ -727,7 +745,7 @@ public class Play {
     /**
      * Load all modules. You can even specify the list using the MODULES environment
      * variable.
-     * 
+     *
      * @param appRoot
      *            the application path virtual file
      */
@@ -831,7 +849,7 @@ public class Play {
         VirtualFile root = VirtualFile.open(path);
         modules.put(name, root);
         if (root.child("app").exists()) {
-            javaPath.add(root.child("app"));
+            addJavaPath(appRoot.child("app"));
         }
         if (root.child("app/views").exists() || (usePrecompiled
                 && appRoot.child("precompiled/templates/from_module_" + name + "/app/views").exists())) {
@@ -875,7 +893,7 @@ public class Play {
      *
      * Your app is running in test-mode if the framework id (Play.id) is 'test' or
      * 'test-?.*'
-     * 
+     *
      * @return true if test mode
      */
     public static boolean runningInTestMode() {
