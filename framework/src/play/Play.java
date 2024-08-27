@@ -649,14 +649,10 @@ public class Play {
     /**
      * Detect sources modifications
      */
-    public static void detectChanges() {
+    public static synchronized void detectChanges() {
         if (mode == Mode.PROD) {
             return;
         }
-        synchronizedDetectChanges();
-    }
-
-    private static synchronized void synchronizedDetectChanges() {
         try {
             pluginCollection.beforeDetectingChanges();
             if (!pluginCollection.detectClassesChange()) {
