@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -124,6 +125,14 @@ public class Play {
      * All paths to search for templates files
      */
     public static final List<VirtualFile> templatesPath = new ArrayList<>(2);
+    /**
+     * detection changes in directo
+     */
+    public static final DetectChanges detectChangeDir = new DetectChanges();
+    /**
+     * detection changes in directo
+     */
+    public static AtomicBoolean mustRunDetected = new AtomicBoolean(false);
     /**
      * Main routes file
      */
@@ -280,9 +289,14 @@ public class Play {
         roots.clear();
         roots.add(appRoot);
 
+        detectChangeDir.clean();
         javaPath.clear();
+
         javaPath.add(appRoot.child("app"));
+        detectChangeDir.add(appRoot.child("app"));
+
         javaPath.add(appRoot.child("conf"));
+        detectChangeDir.add(appRoot.child("conf"));
 
         // Build basic templates path
         templatesPath.clear();
@@ -333,6 +347,8 @@ public class Play {
 
         // Plugins
         pluginCollection.onApplicationReady();
+
+        detectChangeDir.start();
 
         Play.initialized = true;
     }
@@ -649,10 +665,14 @@ public class Play {
     /**
      * Detect sources modifications
      */
-    public static synchronized void detectChanges() {
-        if (mode == Mode.PROD) {
+    public static void detectChanges() {
+        if (!mustRunDetected.get() || Play.mode == Play.Mode.PROD) {
             return;
         }
+        synchronizedDetectChanges();
+    }
+
+    private static synchronized void synchronizedDetectChanges() {
         try {
             pluginCollection.beforeDetectingChanges();
             if (!pluginCollection.detectClassesChange()) {
@@ -828,6 +848,7 @@ public class Play {
         modules.put(name, root);
         if (root.child("app").exists()) {
             javaPath.add(root.child("app"));
+            detectChangeDir.add(root.child("app"));
         }
         if (root.child("app/views").exists() || (usePrecompiled
                 && appRoot.child("precompiled/templates/from_module_" + name + "/app/views").exists())) {
