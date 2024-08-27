@@ -315,8 +315,6 @@ public class ApplicationClassloader extends ClassLoader {
      *             Thrown if the application need to be restarted
      */
     public void detectChanges() throws RestartNeededException {
-        long index = 0L;
-        long start = java.lang.System.nanoTime();
         // Now check for file modification
         List<ApplicationClass> modifieds = new ArrayList<>();
         for (ApplicationClass applicationClass : Play.classes.all()) {
@@ -325,12 +323,10 @@ public class ApplicationClassloader extends ClassLoader {
                 modifieds.add(applicationClass);
             }
         }
-        System.out.println((i++)+"aaa1->" + java.lang.System.nanoTime()-start);
         Set<ApplicationClass> modifiedWithDependencies = new HashSet<>(modifieds);
         if (!modifieds.isEmpty()) {
             modifiedWithDependencies.addAll(Play.pluginCollection.onClassesChange(modifieds));
         }
-        System.out.println((i++)+"aaa2->" + java.lang.System.nanoTime()-start);
         List<ClassDefinition> newDefinitions = new ArrayList<>();
         boolean dirtySig = false;
         for (ApplicationClass applicationClass : modifiedWithDependencies) {
@@ -348,7 +344,7 @@ public class ApplicationClassloader extends ClassLoader {
                 currentState = new ApplicationClassloaderState();// show others that we have changed..
             }
         }
-        System.out.println((i++)+"aaa3->" + java.lang.System.nanoTime()-start);
+
         if (!newDefinitions.isEmpty()) {
             Cache.clear();
             if (HotswapAgent.enabled) {
@@ -361,7 +357,6 @@ public class ApplicationClassloader extends ClassLoader {
                 throw new RestartNeededException(newDefinitions.size() + " classes changed (and HotSwap is not enabled)");
             }
         }
-        System.out.println((i++)+"aaa4->" + java.lang.System.nanoTime()-start);
         // Check signature (variable name & annotations aware !)
         if (dirtySig) {
             throw new RestartNeededException("Signature change !");
@@ -369,7 +364,6 @@ public class ApplicationClassloader extends ClassLoader {
 
         // Now check if there is new classes or removed classes
         int hash = computePathHash();
-        System.out.println((i++)+"aaa5->" + java.lang.System.nanoTime()-start);
         if (hash != this.pathHash) {
             // Remove class for deleted files !!
             for (ApplicationClass applicationClass : Play.classes.all()) {
@@ -391,7 +385,6 @@ public class ApplicationClassloader extends ClassLoader {
             }
             throw new RestartNeededException("Path has changed");
         }
-        System.out.println((i++)+"aaa6->" + java.lang.System.nanoTime()-start);
     }
 
     /**
