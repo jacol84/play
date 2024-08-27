@@ -83,7 +83,7 @@ public class FixturesTest {
         Play.javaPath.clear();
         Play.javaPath.add(appRoot);
 
-        Play.detectChangeDir.clear(appRoot);
+        Play.detectChangeDir.clear();
         Play.detectChangeDir.add(appRoot);
     }
 
