@@ -132,7 +132,7 @@ public class Play {
     /**
      * detection changes in directo
      */
-    public static AtomicBoolean mustRunDetected = new AtomicBoolean(false);
+    public static AtomicBoolean mustRunDetected = new AtomicBoolean(true);
     /**
      * Main routes file
      */
@@ -666,9 +666,9 @@ public class Play {
      * Detect sources modifications
      */
     public static void detectChanges() {
-        if (!mustRunDetected.get() || Play.mode == Play.Mode.PROD) {
-            return;
-        }
+//        if (!mustRunDetected.get() || Play.mode == Play.Mode.PROD) {
+//            return;
+//        }
         synchronizedDetectChanges();
     }
 
