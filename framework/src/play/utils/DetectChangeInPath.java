@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.Collections;
 import java.util.List;
 
 import play.Logger;
@@ -32,9 +33,12 @@ public class DetectChangeInPath {
 
     public boolean detect() {
         WatchKey key = watchService.poll();
+        if (key == null) {
+            return false;
+        }
         List<WatchEvent<?>> watchEvents = key.pollEvents();
         logger(watchEvents);
-        boolean result = watchEvents.isEmpty();
+        boolean result = !watchEvents.isEmpty();
         key.reset();
         return result;
     }
@@ -42,6 +46,7 @@ public class DetectChangeInPath {
     private void logger(List<WatchEvent<?>> watchEvents) {
 //        if (Logger.isDebugEnabled()) {
             for (WatchEvent<?> event : watchEvents) {
+                System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB play.utils.DetectChangeInPath#logger --> " + event.kind() + ": " + event.context());
                 Logger.debug("Event kind:" + event.kind() + ". File affected: " + event.context() + ".");
                 Logger.info("Event kind:" + event.kind() + ". File affected: " + event.context() + ".");
             }

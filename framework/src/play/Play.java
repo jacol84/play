@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -129,10 +128,6 @@ public class Play {
      * detection changes in directo
      */
     public static final DetectChanges detectChangeDir = new DetectChanges();
-    /**
-     * detection changes in directo
-     */
-    public static AtomicBoolean mustRunDetected = new AtomicBoolean(true);
     /**
      * Main routes file
      */
@@ -300,8 +295,8 @@ public class Play {
 
         // Build basic templates path
         templatesPath.clear();
-        if (appRoot.child("app/views").exists()
-                || (usePrecompiled && appRoot.child("precompiled/templates/app/views").exists())) {
+        if (appRoot.child("app/views").exists() || (usePrecompiled && appRoot.child("precompiled/templates/app/views").exists())) {
+            detectChangeDir.add(appRoot.child("app/views"));
             templatesPath.add(appRoot.child("app/views"));
         }
 
@@ -347,7 +342,7 @@ public class Play {
 
         // Plugins
         pluginCollection.onApplicationReady();
-
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#init " + detectChangeDir.shouldStartDetection());
         detectChangeDir.start();
 
         Play.initialized = true;
@@ -364,14 +359,12 @@ public class Play {
             URI uri = new URI(versionUrl.toString().replace(" ", "%20"));
             if (frameworkPath == null || !frameworkPath.exists()) {
                 if (uri.getScheme().equals("jar")) {
-                    String jarPath = uri.getSchemeSpecificPart().substring(5,
-                            uri.getSchemeSpecificPart().lastIndexOf('!'));
+                    String jarPath = uri.getSchemeSpecificPart().substring(5, uri.getSchemeSpecificPart().lastIndexOf('!'));
                     frameworkPath = new File(jarPath).getParentFile().getParentFile().getAbsoluteFile();
                 } else if (uri.getScheme().equals("file")) {
                     frameworkPath = new File(uri).getParentFile().getParentFile().getParentFile().getParentFile();
                 } else {
-                    throw new UnexpectedException(
-                            "Cannot find the Play! framework - trying with uri: " + uri + " scheme " + uri.getScheme());
+                    throw new UnexpectedException("Cannot find the Play! framework - trying with uri: " + uri + " scheme " + uri.getScheme());
                 }
             }
         } catch (Exception e) {
@@ -524,8 +517,7 @@ public class Play {
             if (!Logger.configuredManually) {
                 Logger.setUp(logLevel);
             }
-            Logger.recordCaller = Boolean
-                    .parseBoolean(configuration.getProperty("application.log.recordCaller", "false"));
+            Logger.recordCaller = Boolean.parseBoolean(configuration.getProperty("application.log.recordCaller", "false"));
 
             // Locales
             langs = new ArrayList<>(Arrays.asList(configuration.getProperty("application.langs", "").split(",")));
@@ -666,14 +658,17 @@ public class Play {
      * Detect sources modifications
      */
     public static void detectChanges() {
-//        if (!mustRunDetected.get() || Play.mode == Play.Mode.PROD) {
-//            return;
-//        }
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#detectChangesinit " + detectChangeDir.shouldStartDetection());
+        if (!detectChangeDir.shouldStartDetection() || Play.mode == Play.Mode.PROD) {
+            return;
+        }
         synchronizedDetectChanges();
+        detectChangeDir.reStart();
     }
 
     private static synchronized void synchronizedDetectChanges() {
         try {
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#synchronizedDetectChanges " + detectChangeDir.shouldStartDetection());
             pluginCollection.beforeDetectingChanges();
             if (!pluginCollection.detectClassesChange()) {
                 classloader.detectChanges();
@@ -743,9 +738,8 @@ public class Play {
     /**
      * Load all modules. You can even specify the list using the MODULES environment
      * variable.
-     * 
-     * @param appRoot
-     *            the application path virtual file
+     *
+     * @param appRoot the application path virtual file
      */
     public static void loadModules(VirtualFile appRoot) {
         if (System.getenv("MODULES") != null) {
@@ -755,8 +749,7 @@ public class Play {
                 for (String m : System.getenv("MODULES").split(File.pathSeparator)) {
                     File modulePath = new File(m);
                     if (!modulePath.exists() || !modulePath.isDirectory()) {
-                        Logger.error("Module %s will not be loaded because %s does not exist", modulePath.getName(),
-                                modulePath.getAbsolutePath());
+                        Logger.error("Module %s will not be loaded because %s does not exist", modulePath.getName(), modulePath.getAbsolutePath());
                     } else {
                         String modulePathName = modulePath.getName();
                         String moduleName = modulePathName.contains("-")
@@ -784,9 +777,7 @@ public class Play {
                 DependenciesManager dm = new DependenciesManager(applicationPath, frameworkPath, userHome);
                 modules = dm.retrieveModules();
             } catch (Exception e) {
-                Logger.error(
-                        "There was a problem parsing dependencies.yml (module will not be loaded in order of the dependencies.yml)",
-                        e);
+                Logger.error("There was a problem parsing dependencies.yml (module will not be loaded in order of the dependencies.yml)", e);
                 // Load module without considering the dependencies.yml order
                 modules.addAll(Arrays.asList(localModules.list()));
             }
@@ -799,15 +790,13 @@ public class Play {
                 }
 
                 if (!module.exists()) {
-                    Logger.error("Module %s will not be loaded because %s does not exist", moduleName,
-                            module.getAbsolutePath());
+                    Logger.error("Module %s will not be loaded because %s does not exist", moduleName, module.getAbsolutePath());
                 } else if (module.isDirectory()) {
                     addModule(appRoot, moduleName, module);
                 } else {
                     File modulePath = new File(IO.readContentAsString(module).trim());
                     if (!modulePath.exists() || !modulePath.isDirectory()) {
-                        Logger.error("Module %s will not be loaded because %s does not exist", moduleName,
-                                modulePath.getAbsolutePath());
+                        Logger.error("Module %s will not be loaded because %s does not exist", moduleName, modulePath.getAbsolutePath());
                     } else {
                         addModule(appRoot, moduleName, modulePath);
                     }
@@ -824,10 +813,8 @@ public class Play {
     /**
      * Add a play application (as plugin)
      *
-     * @param name
-     *            the module name
-     * @param path
-     *            The application path
+     * @param name the module name
+     * @param path The application path
      */
     public static void addModule(String name, File path) {
         addModule(VirtualFile.open(applicationPath), name, path);
@@ -836,12 +823,9 @@ public class Play {
     /**
      * Add a play application (as plugin)
      *
-     * @param appRoot
-     *            the application path virtual file
-     * @param name
-     *            the module name
-     * @param path
-     *            The application path
+     * @param appRoot the application path virtual file
+     * @param name    the module name
+     * @param path    The application path
      */
     public static void addModule(VirtualFile appRoot, String name, File path) {
         VirtualFile root = VirtualFile.open(path);
@@ -853,9 +837,10 @@ public class Play {
         if (root.child("app/views").exists() || (usePrecompiled
                 && appRoot.child("precompiled/templates/from_module_" + name + "/app/views").exists())) {
             templatesPath.add(root.child("app/views"));
+            detectChangeDir.add(root.child("app/views"));
         }
-        if (root.child("conf/routes").exists() || (usePrecompiled
-                && appRoot.child("precompiled/templates/from_module_" + name + "/conf/routes").exists())) {
+        if (root.child("conf/routes").exists() || (usePrecompiled && appRoot.child("precompiled/templates/from_module_" + name + "/conf/routes")
+                                                                            .exists())) {
             modulesRoutes.put(name, root.child("conf/routes"));
         }
         roots.add(root);
@@ -867,8 +852,7 @@ public class Play {
     /**
      * Search a VirtualFile in all loaded applications and plugins
      *
-     * @param path
-     *            Relative path from the applications root
+     * @param path Relative path from the applications root
      * @return The virtualFile or null
      */
     public static VirtualFile getVirtualFile(String path) {
@@ -878,8 +862,7 @@ public class Play {
     /**
      * Search a File in the current application
      *
-     * @param path
-     *            Relative path from the application root
+     * @param path Relative path from the application root
      * @return The file even if it doesn't exist
      */
     public static File getFile(String path) {
@@ -889,10 +872,10 @@ public class Play {
     /**
      * Returns true if application is running in test-mode. Test-mode is resolved
      * from the framework id.
-     *
+     * <p>
      * Your app is running in test-mode if the framework id (Play.id) is 'test' or
      * 'test-?.*'
-     * 
+     *
      * @return true if test mode
      */
     public static boolean runningInTestMode() {
