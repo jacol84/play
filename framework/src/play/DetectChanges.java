@@ -25,7 +25,7 @@ public class DetectChanges implements Runnable {
             if (!Thread.currentThread().getName().equals(name)) {
                 return;
             }
-            System.out.println("DDAAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.DetectChanges#run2 " + mustRunDetected.get());
+////            System.out.println("DDAAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.DetectChanges#run2 " + mustRunDetected.get());
             isDetection();
             sleep();
         }
@@ -51,7 +51,7 @@ public class DetectChanges implements Runnable {
             init();
             name = "play-detect-" + getNextGen();
             new Thread(this, name).start();
-            System.out.println("DDAAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.DetectChanges#start " + mustRunDetected.get());
+//            System.out.println("DDAAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.DetectChanges#start " + mustRunDetected.get());
         }
     }
 
@@ -61,15 +61,15 @@ public class DetectChanges implements Runnable {
     }
 
     public void clean() {
-        System.out.println("DDAAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.DetectChanges#clean " + mustRunDetected.get());
-        System.out.println("DDAAAAAAAAAAAAAAAAAAAAAAAAAA SIZE----> play.DetectChanges#init " + directories.size());
+////        System.out.println("DDAAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.DetectChanges#clean " + mustRunDetected.get());
+////        System.out.println("DDAAAAAAAAAAAAAAAAAAAAAAAAAA SIZE----> play.DetectChanges#init " + directories.size());
         detectChangeInPaths.forEach(DetectChangeInPath::close);
         detectChangeInPaths = new ArrayList<>();
         directories = new ArrayList<>();
     }
 
     private void init() {
-        System.out.println("DDAAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.DetectChanges#init " + mustRunDetected.get() + " " + directories.size());
+//        System.out.println("DDAAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.DetectChanges#init " + mustRunDetected.get() + " " + directories.size());
         detectChangeInPaths = directories.stream().filter(VirtualFile::isDirectory).map(x -> x.getRealFile().toPath()).map(DetectChangeInPath::new)
                                          .collect(Collectors.toList());
 

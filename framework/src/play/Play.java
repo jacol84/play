@@ -342,7 +342,7 @@ public class Play {
 
         // Plugins
         pluginCollection.onApplicationReady();
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#init " + detectChangeDir.shouldStartDetection());
+////        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#init " + detectChangeDir.shouldStartDetection());
         detectChangeDir.start();
 
         Play.initialized = true;
@@ -658,17 +658,20 @@ public class Play {
      * Detect sources modifications
      */
     public static void detectChanges() {
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#detectChangesinit " + detectChangeDir.shouldStartDetection());
-        if (!detectChangeDir.shouldStartDetection() || Play.mode == Play.Mode.PROD) {
-            return;
-        }
+//        if(false) {
+////            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#detectChangesinit " + detectChangeDir.shouldStartDetection());
+//            detectChangeDir.isDetection();
+            if (!detectChangeDir.shouldStartDetection() || Play.mode == Play.Mode.PROD) {
+                return;
+            }
+//        }
         synchronizedDetectChanges();
         detectChangeDir.reStart();
     }
 
     private static synchronized void synchronizedDetectChanges() {
         try {
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#synchronizedDetectChanges " + detectChangeDir.shouldStartDetection());
+////            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#synchronizedDetectChanges " + detectChangeDir.shouldStartDetection());
             pluginCollection.beforeDetectingChanges();
             if (!pluginCollection.detectClassesChange()) {
                 classloader.detectChanges();
