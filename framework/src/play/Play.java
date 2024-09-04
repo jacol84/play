@@ -658,20 +658,19 @@ public class Play {
      * Detect sources modifications
      */
     public static void detectChanges() {
-//        if(false) {
-////            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#detectChangesinit " + detectChangeDir.shouldStartDetection());
-//            detectChangeDir.isDetection();
-            if (!detectChangeDir.shouldStartDetection() || Play.mode == Play.Mode.PROD) {
-                return;
-            }
-//        }
+        //        if(false) {
+        ////            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#detectChangesinit " + detectChangeDir.shouldStartDetection());
+        //            detectChangeDir.isDetection();
+        if (!detectChangeDir.shouldStartDetection() || Play.mode == Play.Mode.PROD) {
+            return;
+        }
+        //        }
         synchronizedDetectChanges();
-        detectChangeDir.reStart();
     }
 
     private static synchronized void synchronizedDetectChanges() {
         try {
-////            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#synchronizedDetectChanges " + detectChangeDir.shouldStartDetection());
+//            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA ----> play.Play#synchronizedDetectChanges " + detectChangeDir.shouldStartDetection());
             pluginCollection.beforeDetectingChanges();
             if (!pluginCollection.detectClassesChange()) {
                 classloader.detectChanges();
@@ -681,6 +680,7 @@ public class Play {
             if (!Play.started) {
                 throw new RestartNeededException("Not started");
             }
+            detectChangeDir.reStart();
         } catch (PlayException e) {
             throw e;
         } catch (RestartNeededException e) {
