@@ -179,19 +179,16 @@ public class WithContinuations extends Controller {
         final StringBuilder sb = new StringBuilder();
         final F.Action0 f = new F.Action0() {
             public void invoke() {
+                Logger.info(sb.toString());
+                System.out.println(sb.toString());
                 if(i.getAndIncrement() > 0) sb.append(";");
                 if(i.get() > 5) {
-                    Logger.info(sb);
-                    Logger.info(sb);
                     System.out.println("koniec");
-                    System.out.println(sb);
                     renderText(sb);
                 } else {
                     boolean delay = System.currentTimeMillis() - s.get() > 100;
                     sb.append(i + ":" + delay);
                     s.set(System.currentTimeMillis());
-                    Logger.info(sb);
-                    System.out.println(sb);
                     await(100, this);
                 }
             }
