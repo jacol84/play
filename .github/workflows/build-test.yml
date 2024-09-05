@@ -53,15 +53,15 @@ jobs:
         continue-on-error: true
         run: ant test
 
-      - name: AAAA
-        working-directory: ./samples-and-tests/just-test-cases/test-result
-        continue-on-error: true
-        run: find ./ -type f -name '*.failed.html' | xargs cat
-
-      - name: AAAA2
-        working-directory: ./samples-and-tests/just-test-cases/logs
-        continue-on-error: true
-        run: find ./ -type f -name '*.out' | xargs cat
+#      - name: AAAA
+#        working-directory: ./samples-and-tests/just-test-cases/test-result
+#        continue-on-error: true
+#        run: find ./ -type f -name '*.failed.html' | xargs cat
+#
+#      - name: AAAA2
+#        working-directory: ./samples-and-tests/just-test-cases/logs
+#        continue-on-error: true
+#        run: find ./ -type f -name '*.out' | xargs cat
 
   build:
     needs:

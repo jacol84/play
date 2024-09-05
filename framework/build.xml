@@ -282,13 +282,13 @@
             <param name="play.user.country" value="-Duser.country=US"/>
         </antcall>
 
-        <exec executable="find" failonerror="true">
-            <arg value="auto-test"/>
-            <arg value="${basedir}/../samples-and-tests/just-test-cases"/>
-            <arg value="f"/>
-            <arg value="-name '*.out'"/>
-            <arg value="| xargs cat"/>
-        </exec>
+<!--        <exec executable="find" failonerror="true">-->
+<!--            <arg value="auto-test"/>-->
+<!--            <arg value="${basedir}/../samples-and-tests/just-test-cases"/>-->
+<!--            <arg value="f"/>-->
+<!--            <arg value="-name '*.out'"/>-->
+<!--            <arg value="| xargs cat"/>-->
+<!--        </exec>-->
 
 <!--        <antcall target="play-test2">-->
 <!--&lt;!&ndash;            <param name="testAppPath" value="${basedir}/../samples-and-tests/just-test-cases"/>&ndash;&gt;-->
