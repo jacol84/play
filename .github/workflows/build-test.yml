@@ -53,6 +53,19 @@ jobs:
         continue-on-error: true
         run: ant test
 
+      - name: ziping artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: moje
+          path: ./samples-and-tests/just-test-cases/logs
+
+      - name: ziping artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-result
+          path: ./samples-and-tests/just-test-cases/test-result/*.failed.html
+#          if-no-files-found: error
+
 #      - name: AAAA
 #        working-directory: ./samples-and-tests/just-test-cases/test-result
 #        continue-on-error: true
