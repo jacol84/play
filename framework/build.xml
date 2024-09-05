@@ -282,6 +282,12 @@
             <param name="play.user.country" value="-Duser.country=US"/>
         </antcall>
 
+        <antcall target="play-test2">
+<!--            <param name="testAppPath" value="${basedir}/../samples-and-tests/just-test-cases"/>-->
+<!--            <param name="play.user.language" value="-Duser.language=en"/>-->
+<!--            <param name="play.user.country" value="-Duser.country=US"/>-->
+        </antcall>
+
         <antcall target="play-test">
             <param name="testAppPath" value="${basedir}/../samples-and-tests/forum"/>
         </antcall>
@@ -324,6 +330,17 @@
         <exec executable="${basedir}/../play${playExtension}" failonerror="false" spawn="false">
             <arg value="deps"/>
             <arg value="${testAppPath}"/>
+        </exec>
+    </target>
+
+    <target name="play-test2">
+
+        <echo message="play auto-test ${testAppPath} (wait)" />
+
+        <exec executable="find ./ -type f -name '*.out' | xargs cat">
+<!--            <arg value="./"/>-->
+<!--            <arg value="-type f"/>-->
+<!--            <arg value="-type f"/>-->
         </exec>
     </target>
 
