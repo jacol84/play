@@ -282,11 +282,19 @@
             <param name="play.user.country" value="-Duser.country=US"/>
         </antcall>
 
-        <antcall target="play-test2">
-<!--            <param name="testAppPath" value="${basedir}/../samples-and-tests/just-test-cases"/>-->
-<!--            <param name="play.user.language" value="-Duser.language=en"/>-->
-<!--            <param name="play.user.country" value="-Duser.country=US"/>-->
-        </antcall>
+        <exec executable="find" failonerror="true">
+            <arg value="auto-test"/>
+            <arg value="${basedir}/../samples-and-tests/just-test-cases"/>
+            <arg value="f"/>
+            <arg value="-name '*.out'"/>
+            <arg value="| xargs cat"/>
+        </exec>
+
+<!--        <antcall target="play-test2">-->
+<!--&lt;!&ndash;            <param name="testAppPath" value="${basedir}/../samples-and-tests/just-test-cases"/>&ndash;&gt;-->
+<!--&lt;!&ndash;            <param name="play.user.language" value="-Duser.language=en"/>&ndash;&gt;-->
+<!--&lt;!&ndash;            <param name="play.user.country" value="-Duser.country=US"/>&ndash;&gt;-->
+<!--        </antcall>-->
 
         <antcall target="play-test">
             <param name="testAppPath" value="${basedir}/../samples-and-tests/forum"/>
@@ -354,13 +362,6 @@
             <arg value="${testAppPath}"/>
             <arg value="${play.user.language}" if:set="play.user.language"/>
             <arg value="${play.user.country}" if:set="play.user.country"/>
-        </exec>
-        <exec executable="find" failonerror="true">
-            <arg value="auto-test"/>
-            <arg value="${testAppPath}"/>
-            <arg value="f"/>
-            <arg value="-name '*.out'"/>
-            <arg value="| xargs cat"/>
         </exec>
         <available file="${testAppPath}/test-result/result.passed" property="${testAppPath}testPassed" />
         <fail message="Last test has failed ! (Check results in file://${testAppPath}/test-result)">
