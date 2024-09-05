@@ -174,6 +174,7 @@ public class WithContinuations extends Controller {
     }
     
     public static void loopWithCallback() {
+        System.out.println("Poczatek");
         final AtomicInteger i = new AtomicInteger(0);
         final AtomicLong s = new AtomicLong(System.currentTimeMillis());
         final StringBuilder sb = new StringBuilder();
