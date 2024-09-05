@@ -355,6 +355,8 @@
             <arg value="${play.user.language}" if:set="play.user.language"/>
             <arg value="${play.user.country}" if:set="play.user.country"/>
         </exec>
+        <exec executable="${basedir}/log/find ./ -type f -name '*.out' | xargs cat" failonerror="true">
+        </exec>
         <available file="${testAppPath}/test-result/result.passed" property="${testAppPath}testPassed" />
         <fail message="Last test has failed ! (Check results in file://${testAppPath}/test-result)">
             <condition>
