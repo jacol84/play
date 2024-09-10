@@ -364,11 +364,14 @@
             <arg value="${play.user.country}" if:set="play.user.country"/>
         </exec>
 
+        <echo message="CAT1 CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
         <echo message="CAT2 CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
-        <echo message="CAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
 
         <echo message="cat ${testAppPath}/logs/*.out "></echo>
 
+        <exec executable="pwd" failonerror="false">
+        </exec>
+        <echo message="CAT3 CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
         <exec executable="cat ${testAppPath}/logs/*.out" failonerror="false">
         </exec>
 
