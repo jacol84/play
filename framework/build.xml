@@ -353,9 +353,9 @@
     </target>
 
     <target name="play-test">
-	<antcall target="do-deps">
-            <param name="testAppPath" value="${testAppPath}"/>
-	</antcall>
+        <antcall target="do-deps">
+                <param name="testAppPath" value="${testAppPath}"/>
+        </antcall>
         <echo message="play auto-test ${testAppPath} (wait)" />
         <exec executable="${basedir}/../play${playExtension}" failonerror="true">
             <arg value="auto-test"/>
@@ -364,6 +364,11 @@
             <arg value="${play.user.country}" if:set="play.user.country"/>
         </exec>
         <available file="${testAppPath}/test-result/result.passed" property="${testAppPath}testPassed" />
+
+        <exec executable="cat">
+            <arg value="${testAppPath}/logs/*"></arg>
+        </exec>
+
         <fail message="Last test has failed ! (Check results in file://${testAppPath}/test-result)">
             <condition>
                 <not>
