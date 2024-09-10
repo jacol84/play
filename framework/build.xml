@@ -368,8 +368,9 @@
         <echo message="CAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
         <echo message="CAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
 
-        <exec executable="cat">
-            <arg value="${testAppPath}/logs/*"></arg>
+        <echo message="cat ${testAppPath}/logs/* "></echo>
+        <exec executable="cat ${testAppPath}/logs/*">
+<!--            <arg value="${testAppPath}/logs/*"></arg>-->
         </exec>
 
         <fail message="Last test has failed ! (Check results in file://${testAppPath}/test-result)">
