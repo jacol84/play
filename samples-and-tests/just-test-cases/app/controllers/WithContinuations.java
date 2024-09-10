@@ -191,6 +191,7 @@ public class WithContinuations extends Controller {
                     renderText(sb);
                 } else {
                     boolean delay = System.currentTimeMillis() - s.get() > 100;
+                    System.out.println("bazaaaaa" +System.currentTimeMillis() - s.get());
                     sb.append(i + ":" + delay);
                     s.set(System.currentTimeMillis());
                     await(100, this);

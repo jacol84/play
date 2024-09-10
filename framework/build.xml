@@ -375,9 +375,6 @@
 
 <!--        ${testAppPath}/test-result-->
 
-        <exec executable="ls ${testAppPath}" failonerror="false">
-        </exec>
-
         <available file="${testAppPath}/test-result/result.passed" property="${testAppPath}testPassed" />
 
         <fail message="Last test has failed ! (Check results in file://${testAppPath}/test-result)">
