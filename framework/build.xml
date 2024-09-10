@@ -372,11 +372,13 @@
         <exec executable="pwd" failonerror="false">
         </exec>
         <echo message="CAT3 CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
-        <exec executable="cat ${testAppPath}/logs/*.out" failonerror="false">
+        <exec executable="tree ../samples-and-tests/just-test-cases/" failonerror="false">
+        </exec>
+        <exec executable="cat ../samples-and-tests/just-test-cases/" failonerror="false">
         </exec>
 
         <exec executable="cat" failonerror="false">
-            <arg value="${testAppPath}/logs/*.out"></arg>
+            <arg value="../test/*.out"></arg>
         </exec>
 
         <available file="${testAppPath}/test-result/result.passed" property="${testAppPath}testPassed" />
