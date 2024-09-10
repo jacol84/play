@@ -363,15 +363,20 @@
             <arg value="${play.user.language}" if:set="play.user.language"/>
             <arg value="${play.user.country}" if:set="play.user.country"/>
         </exec>
-        <available file="${testAppPath}/test-result/result.passed" property="${testAppPath}testPassed" />
 
-        <echo message="CAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
+        <echo message="CAT2 CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
         <echo message="CAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
 
-        <echo message="cat ${testAppPath}/logs/* "></echo>
-        <exec executable="cat ${testAppPath}/logs/*">
-<!--            <arg value="${testAppPath}/logs/*"></arg>-->
+        <echo message="cat ${testAppPath}/logs/*.out "></echo>
+
+        <exec executable="cat ${testAppPath}/logs/*.out" failonerror="false">
         </exec>
+
+        <exec executable="cat" failonerror="false">
+            <arg value="${testAppPath}/logs/*.out"></arg>
+        </exec>
+
+        <available file="${testAppPath}/test-result/result.passed" property="${testAppPath}testPassed" />
 
         <fail message="Last test has failed ! (Check results in file://${testAppPath}/test-result)">
             <condition>
