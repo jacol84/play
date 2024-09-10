@@ -366,17 +366,15 @@
 
         <echo message="CAT1 CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
         <echo message="CAT2 CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
-
-        <echo message="cat ${testAppPath}/logs/*.out "></echo>
-
         <exec executable="pwd" failonerror="false">
         </exec>
         <echo message="CAT3 CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
-        <exec executable="tree " failonerror="false">
-        </exec>
-        <exec executable="tree ../samples-and-tests/just-test-cases/" failonerror="false">
-        </exec>
-        <exec executable="cat ../samples-and-tests/just-test-cases/" failonerror="false">
+
+        <loadfile property="fileeee" srcFile="${testAppPath}/logs/system.out" />
+        <echo>${fileeee}</echo>
+
+
+        <exec executable="ls ${testAppPath}" failonerror="false">
         </exec>
 
         <exec executable="cat" failonerror="false">
