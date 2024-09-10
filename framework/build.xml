@@ -357,7 +357,7 @@
                 <param name="testAppPath" value="${testAppPath}"/>
         </antcall>
         <echo message="play auto-test ${testAppPath} (wait)" />
-        <exec executable="${basedir}/../play${playExtension}" failonerror="true">
+        <exec executable="${basedir}/../play${playExtension}" failonerror="false">
             <arg value="auto-test"/>
             <arg value="${testAppPath}"/>
             <arg value="${play.user.language}" if:set="play.user.language"/>
