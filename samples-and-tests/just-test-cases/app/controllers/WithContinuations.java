@@ -119,6 +119,7 @@ public class WithContinuations extends Controller {
     }
     
     public static void getUserByName(String name) {
+        Logger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         renderText("Users:" + User.count() + " -> " + User.find("byName", name).first());
     }
     
@@ -162,6 +163,7 @@ public class WithContinuations extends Controller {
     }
     
     public static void streamedResult() {
+        Logger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3");
         response.contentType = "text/html";
         response.writeChunk("<h1>This page should load progressively in about a few seconds</h1>");
         long s = System.currentTimeMillis();
@@ -174,6 +176,7 @@ public class WithContinuations extends Controller {
     }
     
     public static void loopWithCallback() {
+        Logger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1");
         System.out.println("Poczatek");
         final AtomicInteger i = new AtomicInteger(0);
         final AtomicLong s = new AtomicLong(System.currentTimeMillis());

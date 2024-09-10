@@ -373,12 +373,9 @@
         <loadfile property="fileeee" srcFile="${testAppPath}/logs/system.out" />
         <echo>${fileeee}</echo>
 
+<!--        ${testAppPath}/test-result-->
 
         <exec executable="ls ${testAppPath}" failonerror="false">
-        </exec>
-
-        <exec executable="cat" failonerror="false">
-            <arg value="../test/*.out"></arg>
         </exec>
 
         <available file="${testAppPath}/test-result/result.passed" property="${testAppPath}testPassed" />
