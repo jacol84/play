@@ -372,6 +372,8 @@
         <exec executable="pwd" failonerror="false">
         </exec>
         <echo message="CAT3 CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
+        <exec executable="tree " failonerror="false">
+        </exec>
         <exec executable="tree ../samples-and-tests/just-test-cases/" failonerror="false">
         </exec>
         <exec executable="cat ../samples-and-tests/just-test-cases/" failonerror="false">
