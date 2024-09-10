@@ -365,6 +365,9 @@
         </exec>
         <available file="${testAppPath}/test-result/result.passed" property="${testAppPath}testPassed" />
 
+        <echo message="CAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
+        <echo message="CAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CATCAT CAT"></echo>
+
         <exec executable="cat">
             <arg value="${testAppPath}/logs/*"></arg>
         </exec>
