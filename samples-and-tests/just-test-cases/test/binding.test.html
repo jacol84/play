@@ -80,7 +80,15 @@
              To test the same stuff´, we therefor request a page from the server (which has the correct lang, en)
              which generates the link we need, then we click it.
              We end up testing the exact same stuff, only under known locale conditions. -->
-        open('@{Application.generateBookWithDateLink(2879964256556)}')                                      
+
+        <!--we get the time here because of different time zones, that's why we get the local time -->
+        %{
+            var dateString = "2061-04-05 12:00";
+            var formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
+            var date = formatter.parse(dateString);
+        }%
+
+        open('@{Application.generateBookWithDateLink(date.getTime())}')
         clickAndWait('timeLink')
         assertTextPresent('Booked at 05/04/61 !!')
 		

@@ -125,6 +125,10 @@ public class Play {
      */
     public static final List<VirtualFile> templatesPath = new ArrayList<>(2);
     /**
+     * detection changes in directo
+     */
+    public static final DetectChanges detectChangeDir = new DetectChanges();
+    /**
      * Main routes file
      */
     public static VirtualFile routes;
@@ -280,14 +284,19 @@ public class Play {
         roots.clear();
         roots.add(appRoot);
 
+        detectChangeDir.clean();
         javaPath.clear();
+
         javaPath.add(appRoot.child("app"));
+        detectChangeDir.add(appRoot.child("app"));
+
         javaPath.add(appRoot.child("conf"));
+        detectChangeDir.add(appRoot.child("conf"));
 
         // Build basic templates path
         templatesPath.clear();
-        if (appRoot.child("app/views").exists()
-                || (usePrecompiled && appRoot.child("precompiled/templates/app/views").exists())) {
+        if (appRoot.child("app/views").exists() || (usePrecompiled && appRoot.child("precompiled/templates/app/views").exists())) {
+            detectChangeDir.add(appRoot.child("app/views"));
             templatesPath.add(appRoot.child("app/views"));
         }
 
@@ -333,6 +342,7 @@ public class Play {
 
         // Plugins
         pluginCollection.onApplicationReady();
+        detectChangeDir.start();
 
         Play.initialized = true;
     }
@@ -348,14 +358,12 @@ public class Play {
             URI uri = new URI(versionUrl.toString().replace(" ", "%20"));
             if (frameworkPath == null || !frameworkPath.exists()) {
                 if (uri.getScheme().equals("jar")) {
-                    String jarPath = uri.getSchemeSpecificPart().substring(5,
-                            uri.getSchemeSpecificPart().lastIndexOf('!'));
+                    String jarPath = uri.getSchemeSpecificPart().substring(5, uri.getSchemeSpecificPart().lastIndexOf('!'));
                     frameworkPath = new File(jarPath).getParentFile().getParentFile().getAbsoluteFile();
                 } else if (uri.getScheme().equals("file")) {
                     frameworkPath = new File(uri).getParentFile().getParentFile().getParentFile().getParentFile();
                 } else {
-                    throw new UnexpectedException(
-                            "Cannot find the Play! framework - trying with uri: " + uri + " scheme " + uri.getScheme());
+                    throw new UnexpectedException("Cannot find the Play! framework - trying with uri: " + uri + " scheme " + uri.getScheme());
                 }
             }
         } catch (Exception e) {
@@ -508,8 +516,7 @@ public class Play {
             if (!Logger.configuredManually) {
                 Logger.setUp(logLevel);
             }
-            Logger.recordCaller = Boolean
-                    .parseBoolean(configuration.getProperty("application.log.recordCaller", "false"));
+            Logger.recordCaller = Boolean.parseBoolean(configuration.getProperty("application.log.recordCaller", "false"));
 
             // Locales
             langs = new ArrayList<>(Arrays.asList(configuration.getProperty("application.langs", "").split(",")));
@@ -649,10 +656,14 @@ public class Play {
     /**
      * Detect sources modifications
      */
-    public static synchronized void detectChanges() {
-        if (mode == Mode.PROD) {
+    public static void detectChanges() {
+        if (!detectChangeDir.shouldStartDetection() || Play.mode == Play.Mode.PROD) {
             return;
         }
+        synchronizedDetectChanges();
+    }
+
+    private static synchronized void synchronizedDetectChanges() {
         try {
             pluginCollection.beforeDetectingChanges();
             if (!pluginCollection.detectClassesChange()) {
@@ -663,6 +674,7 @@ public class Play {
             if (!Play.started) {
                 throw new RestartNeededException("Not started");
             }
+            detectChangeDir.reStart();
         } catch (PlayException e) {
             throw e;
         } catch (RestartNeededException e) {
@@ -828,13 +840,15 @@ public class Play {
         modules.put(name, root);
         if (root.child("app").exists()) {
             javaPath.add(root.child("app"));
+            detectChangeDir.add(root.child("app"));
         }
         if (root.child("app/views").exists() || (usePrecompiled
                 && appRoot.child("precompiled/templates/from_module_" + name + "/app/views").exists())) {
             templatesPath.add(root.child("app/views"));
+            detectChangeDir.add(root.child("app/views"));
         }
-        if (root.child("conf/routes").exists() || (usePrecompiled
-                && appRoot.child("precompiled/templates/from_module_" + name + "/conf/routes").exists())) {
+        if (root.child("conf/routes").exists() || (usePrecompiled && appRoot.child("precompiled/templates/from_module_" + name + "/conf/routes")
+                                                                            .exists())) {
             modulesRoutes.put(name, root.child("conf/routes"));
         }
         roots.add(root);

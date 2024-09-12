@@ -1,4 +1,5 @@
 name: Delete Caches
+run-name: Delete Caches - ${{ github.event.repository.updated_at}}
 on:
   schedule:
     - cron: "0 */4 * * *" # Every 4th hour

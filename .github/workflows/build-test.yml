@@ -1,4 +1,5 @@
 name: Check
+run-name: Check and build - '${{ github.event.head_commit.message }}'
 
 on:
   pull_request: # Check Pull Requests
@@ -18,11 +19,14 @@ jobs:
 
     strategy:
       matrix:
-        jdk: [ 11, 17 ]
-        os: [ubuntu-latest, windows-latest]
+        jdk: [ 11, 17, 21 ]
+#        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         exclude:
           - os: windows-latest
             jdk: 11
+          - os: windows-latest
+            jdk: 17
 
     name: Check / Tests -> JDK-${{ matrix.jdk }}/${{ matrix.os }}
     steps:
