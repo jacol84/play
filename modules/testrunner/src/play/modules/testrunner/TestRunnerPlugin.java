@@ -13,10 +13,12 @@ public class TestRunnerPlugin extends PlayPlugin {
     public void onLoad() {
         VirtualFile appRoot = VirtualFile.open(Play.applicationPath);
         Play.javaPath.add(appRoot.child("test"));
+        Play.detectChangeDir.add(appRoot.child("test"));
         for (VirtualFile module : Play.modules.values()) {
             File modulePath = module.getRealFile();
             if (!modulePath.getAbsolutePath().startsWith(Play.frameworkPath.getAbsolutePath()) && !Play.javaPath.contains(module.child("test"))) {
                 Play.javaPath.add(module.child("test"));
+                Play.detectChangeDir.add(module.child("test"));
             }
         }
     }

@@ -2,7 +2,7 @@
 
 <project name="play! framework" default="jar" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 
-    <property name="baseversion" value="1.7.x" />
+    <property name="baseversion" value="1.8.x" />
 
     <path id="project.classpath">
         <fileset dir=".">
@@ -328,9 +328,9 @@
     </target>
 
     <target name="play-test">
-	<antcall target="do-deps">
-            <param name="testAppPath" value="${testAppPath}"/>
-	</antcall>
+        <antcall target="do-deps">
+                <param name="testAppPath" value="${testAppPath}"/>
+        </antcall>
         <echo message="play auto-test ${testAppPath} (wait)" />
         <exec executable="${basedir}/../play${playExtension}" failonerror="true">
             <arg value="auto-test"/>
@@ -338,6 +338,14 @@
             <arg value="${play.user.language}" if:set="play.user.language"/>
             <arg value="${play.user.country}" if:set="play.user.country"/>
         </exec>
+        <condition property="testFailed" value="false" else="true">
+            <resourcecount when="greater" count="0">
+                <fileset dir="${testAppPath}" includes="test-result/result.passed"/>
+            </resourcecount>
+        </condition>
+        <antcall target="play-log-${testFailed}">
+            <param name="testAppPath" value="${testAppPath}"/>
+        </antcall>
         <available file="${testAppPath}/test-result/result.passed" property="${testAppPath}testPassed" />
         <fail message="Last test has failed ! (Check results in file://${testAppPath}/test-result)">
             <condition>
@@ -347,6 +355,16 @@
             </condition>
         </fail>
     </target>
+
+    <target name="play-log-true">
+        <!--        <fileset id="testsField" dir="${testAppPath}/test-result" includes="*.failed.html"/>-->
+        <!--        <property name="tests" refid="testsField"/>-->
+        <!--        <echo message="${tests}"/>-->
+        <loadfile property="log" srcFile="${testAppPath}/logs/system.out" failonerror="false"/>
+        <echo message="${log}"/>
+    </target>
+
+    <target name="play-log-false" />
 
     <target name="debug-test-single" depends="compile-tests" description="debug a single test">
         <nbjpdastart addressproperty="jpda.address" name="Play! framework" transport="dt_socket">

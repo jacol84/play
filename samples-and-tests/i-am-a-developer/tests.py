@@ -428,6 +428,7 @@ class IamADeveloper(unittest.TestCase):
             step('Make a mistake in Application.java')
 
             edit(app, 'app/controllers/Application.java', 13, '        render()')
+            detectTime()
             try:
                 browser.reload()
                 self.fail()
@@ -469,6 +470,7 @@ class IamADeveloper(unittest.TestCase):
             step('Correct the error')
 
             edit(app, 'app/controllers/Application.java', 13, '        render();')
+            detectTime()
             response = browser.reload()
             self.assertTrue(browser.viewing_html())
             self.assertTrue(browser.title() == 'Your application is ready !')
@@ -492,6 +494,7 @@ class IamADeveloper(unittest.TestCase):
             edit(app, 'app/controllers/Application.java', 13, '        render(name);')
             edit(app, 'app/views/Application/index.html', 2, "#{set title:'Hello world app' /}")
             edit(app, 'app/views/Application/index.html', 4, "Hello ${name} !!")
+            detectTime()
             response = browser.reload()
             self.assertTrue(browser.viewing_html())
             self.assertTrue(browser.title() == 'Hello world app')
@@ -510,6 +513,7 @@ class IamADeveloper(unittest.TestCase):
             time.sleep(1)
 
             edit(app, 'app/views/Application/index.html', 4, "Hello ${name !!")
+            detectTime()
             try:
                 response = browser.reload()
                 self.fail()
@@ -548,6 +552,7 @@ class IamADeveloper(unittest.TestCase):
             time.sleep(1)
 
             edit(app, 'app/views/Application/index.html', 4, "Hello ${user.name}")
+            detectTime()
             try:
                 response = browser.reload()
                 self.fail()
@@ -594,6 +599,7 @@ class IamADeveloper(unittest.TestCase):
             time.sleep(1)
 
             edit(app, 'app/views/Application/index.html', 4, "Hello ${name} !!")
+            detectTime()
             response = browser.reload()
             self.assertTrue(browser.viewing_html())
             self.assertTrue(browser.title() == 'Hello world app')
@@ -604,6 +610,7 @@ class IamADeveloper(unittest.TestCase):
             step('Make a Java runtime exception')
 
             insert(app, 'app/controllers/Application.java', 13, '        int a = 9/0;')
+            detectTime()
             try:
                 response = browser.reload()
                 self.fail()
@@ -648,6 +655,7 @@ class IamADeveloper(unittest.TestCase):
             time.sleep(1)
 
             delete(app, 'app/controllers/Application.java', 13)
+            detectTime()
             response = browser.reload()
             self.assertTrue(browser.viewing_html())
             self.assertTrue(browser.title() == 'Hello world app')
@@ -686,6 +694,7 @@ class IamADeveloper(unittest.TestCase):
             insert(app, 'app/controllers/Hello.java', 5, '      renderText("Hello");')
             insert(app, 'app/controllers/Hello.java', 6, '  }')
             insert(app, 'app/controllers/Hello.java', 7, '}')
+            detectTime()
 
             # Retry
             step('Retry')
@@ -701,6 +710,7 @@ class IamADeveloper(unittest.TestCase):
 
             rename(app, 'app/controllers/Hello.java', 'app/controllers/Hello2.java')
             edit(app, 'app/controllers/Hello2.java', 3, "public class Hello2 extends Application {")
+            detectTime()
 
             try:
                 browser.reload()
@@ -724,6 +734,7 @@ class IamADeveloper(unittest.TestCase):
             time.sleep(1)
 
             edit(app, 'conf/routes', 7, "GET      /hello          Hello2.hello")
+            detectTime()
 
             browser.reload()
             self.assertTrue(not browser.viewing_html())
@@ -744,6 +755,7 @@ class IamADeveloper(unittest.TestCase):
 
             rename(app, 'app/controllers/Hello2.java', 'app/controllers/Hello3.java')
             edit(app, 'conf/routes', 7, "GET      /hello          Hello3.hello")
+            detectTime()
 
             try:
                 browser.reload()
@@ -779,6 +791,7 @@ class IamADeveloper(unittest.TestCase):
             step('Fix it')
 
             edit(app, 'app/controllers/Hello3.java', 3, "public class Hello3 extends Application {")
+            detectTime()
             browser.reload()
             self.assertTrue(not browser.viewing_html())
             html = response.get_data()
@@ -907,6 +920,9 @@ def step(msg):
     print()
     print('# --- %s' % msg)
     print()
+
+def detectTime():
+    time.sleep(5)
 
 
 def edit(app, file, line, text):

@@ -183,7 +183,7 @@ public class WithContinuations extends Controller {
                 if(i.get() > 5) {
                     renderText(sb);
                 } else {
-                    boolean delay = System.currentTimeMillis() - s.get() > 100;
+                    boolean delay = System.currentTimeMillis() - s.get() >= 100;
                     sb.append(i + ":" + delay);
                     s.set(System.currentTimeMillis());
                     await(100, this);
